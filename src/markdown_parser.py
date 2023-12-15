@@ -112,7 +112,7 @@ def export_csv(file_name,final_chunks):
 
 
 if __name__ == '__main__':
-    input_folder='input/md/english/'
+    input_folder='input/md/hindi/'
     all_files = []
 
 # Iterate through the main folder and its subfolders

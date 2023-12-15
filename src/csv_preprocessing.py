@@ -4,6 +4,7 @@ from translate import *
 from split_chunks import *
 from gpt_response import get_gpt_response
 import re
+import time
 
 
 def translating_hindi_csvs(file):
@@ -52,22 +53,46 @@ if __name__ == '__main__':
 
     # translating hindi files
     # for file in hindi_files:
+        
     #     translating_hindi_csvs(file)
 
-    #creating empty columns to match hindi structure
-    for file in english_files:
-        df=pd.read_csv(file)
-        df['originalLanguageChunk']=''
-        df['originalLanguageHeading']=''
-        df=df[['chunkId','content','heading','originalLanguageChunk','StartPage','EndPage','originalLanguageHeading','ContentWordCount','pdfName','contentType','image','summary']]
-        df.to_csv(file)
-    
-    for file in english_files:
-        df=pd.read_csv(file)
-        print('splitting',file)
-        split_chunks(df).to_csv(file) #split chunks
-        # print('summarizing',file)
-        # summary(file)
+    # # creating empty columns to match hindi structure
+    # for file in english_files:
+    #     df=pd.read_csv(file)
+    #     df['originalLanguageChunk']=''
+    #     df['originalLanguageHeading']=''
+    #     df=df[['chunkId','content','heading','originalLanguageChunk','StartPage','EndPage','originalLanguageHeading','ContentWordCount','pdfName','contentType','image','summary']]
+    #     df.to_csv(file)
 
+    # for file in hindi_files:
+    #     if 'splitted' in file:
+    #         continue
+    #     print('on file', file)
+    #     df = pd.read_csv(file)
+    #     df_filtered = df[df['contentType'] != 'heading']
+    #     df_filtered = df_filtered[df_filtered['ContentWordCount']!=0]
+    #     df_filtered.to_csv(file, index=False)
+    
+
+    for file in all_files:
+        # new_file=f"{file.split('.')[0]}_new.csv"
+        # if 'splitted' in file:
+        #     continue
+        # df=pd.read_csv(file)
+        if 'new' not in file:
+            continue
+        # print('splitting',file)
+        # new_df=split_chunks(df)
+        # new_df = new_df[new_df['ContentWordCount']!=0]
+        # new_df.to_csv(new_file,index=False)
+        # print('combining',file)
+        # time.sleep(2)
+        # merge_small_chunks(new_df).to_csv(new_file,index=False)
+        # split chunks
+        try:
+            print('summarizing',file)
+            summary(file)
+        except Exception as e:
+            print('Error: ',e)
 
         

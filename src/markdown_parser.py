@@ -31,14 +31,14 @@ def combine_chunks(chunks):
         elif chunks[i].startswith('- ') or chunks[i].startswith('* '):
             chunk,i=para_parser(chunks[i:],i)
             combined_chunks.append({'type':'list','content':chunk})
-        
+
         # elif chunks[i][0] not in temp and (i+1)!=len(chunks):
         elif (chunks[i][0] not in temp and (i+1)!=len(chunks)) or chunks[i]=='|':
             chunk,i=para_parser(chunks[i:],i)
-            
+        
             # chunk=chunks[i].strip()
             if len(chunk)==0:
-                
+                i=i+1
                 continue
             combined_chunks.append({'type':'para','content':chunk})
             # i=i+1
@@ -112,8 +112,8 @@ def export_csv(file_name,final_chunks):
 
 
 if __name__ == '__main__':
-    input_folder='input/md/hindi/'
-    all_files = []
+    input_folder='input/md/'
+    all_files = []#['input/md/english/RevisedPM-KISANOperationalGuidelines(English).md']
 
 # Iterate through the main folder and its subfolders
     for folder, subfolders, files in os.walk(input_folder):
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         all_files.extend(full_file_paths)
     
     for file in all_files:
-    # file='E:\PDF-Parser\input\md\english\FARMER PRODUCER ORGANISATIONS.md'
+    # file='E:\PDF-Parser\input\md\hindi\Natural_Farming_Kharif_Booklet.md'
         print('Currently on',file)
         chunks=create_chunks(file_name=file)
         combined_chunks=combine_chunks(chunks)

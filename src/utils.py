@@ -32,7 +32,8 @@ def para_parser(chunks,index):
     temp=['#','## ','### ','#### ','##### ','###### ','-','|']
     for i,chunk in enumerate(chunks):
         if chunk=='':
-            i=i+1            
+            current_para=current_para.strip()
+            return (current_para,(index+i))            
         elif inside_para:
             if chunk[0] not in temp:
                 inside_para=True
@@ -42,7 +43,7 @@ def para_parser(chunks,index):
                 # if len(current_para)==0:
                 #     return(current_para,'flag')
                 return (current_para,(index+i))            
-        elif chunk[0] not in temp:
+        elif (chunk[0] not in temp) or chunk!='|':
             inside_para=True
             current_para=chunk
             

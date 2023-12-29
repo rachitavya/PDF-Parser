@@ -7,12 +7,12 @@ import re
 import time
 
 
-def translating_hindi_csvs(file):
+def translating_hindi_csvs(file,source):
     df=pd.read_csv(file)
     df = df.rename(columns={'content': 'originalLanguageChunk','heading':'originalLanguageHeading'})
     print('translating',file)
-    df['content'] = df.apply(lambda row: translate_text_bhashini(row['originalLanguageChunk'])[0] if row['contentType'] != 'table' else row['originalLanguageChunk'], axis=1)
-    df['heading'] = df.apply(lambda row: translate_text_bhashini(row['originalLanguageHeading'])[0] if row['contentType'] != 'table' else row['originalLanguageHeading'], axis=1)
+    df['content'] = df.apply(lambda row: translate_text_bhashini(row['originalLanguageChunk'],source=source)[0] , axis=1)
+    df['heading'] = df.apply(lambda row: translate_text_bhashini(row['originalLanguageHeading'],source=source)[0], axis=1) 
     df=df[['chunkId','content','heading','originalLanguageChunk','StartPage','EndPage','originalLanguageHeading','ContentWordCount','pdfName','contentType','image','summary']]
     df.to_csv(file)
     print('translating done')
@@ -35,6 +35,39 @@ You dont say anything else apart from the 5 sentence summary. Do not reproduce e
             df.loc[i,'summary'] =  get_gpt_response(system_prompt,content)
     df.to_csv(file)
 
+def driver(file):
+
+    # if language!='english':      
+    if 'hindi' in file:     
+        translating_hindi_csvs(file,source='hi')
+    # if language=='english':
+    if 'english' in file:     
+        df=pd.read_csv(file)
+        df['originalLanguageChunk']=''
+        df['originalLanguageHeading']=''
+        df=df[['chunkId','content','heading','originalLanguageChunk','StartPage','EndPage','originalLanguageHeading','ContentWordCount','pdfName','contentType','image','summary']]
+        df.to_csv(file)
+
+    print('on file', file)
+    df=pd.read_csv(file)
+    df_filtered = df[df['contentType'] != 'heading']
+    df_filtered = df_filtered[df_filtered['ContentWordCount']!=0]     
+
+    print('combining',file)
+    combined_df=merge_small_chunks(df_filtered)
+    
+    print('splitting',file)
+    splitted_df=split_chunks(combined_df)
+
+    new_df = splitted_df[splitted_df['ContentWordCount']!=0]
+    new_df.to_csv(file,index=False)
+
+    # try:
+    #     print('summarizing',file)
+    #     summary(file)
+    # except Exception as e:
+    #     print('Error: ',e)
+    
 if __name__ == '__main__':
     
     hindi_files=[]
@@ -51,48 +84,5 @@ if __name__ == '__main__':
 
     all_files=hindi_files+english_files
 
-    # translating hindi files
-    # for file in hindi_files:
-        
-    #     translating_hindi_csvs(file)
-
-    # # creating empty columns to match hindi structure
-    # for file in english_files:
-    #     df=pd.read_csv(file)
-    #     df['originalLanguageChunk']=''
-    #     df['originalLanguageHeading']=''
-    #     df=df[['chunkId','content','heading','originalLanguageChunk','StartPage','EndPage','originalLanguageHeading','ContentWordCount','pdfName','contentType','image','summary']]
-    #     df.to_csv(file)
-
-    # for file in hindi_files:
-    #     if 'splitted' in file:
-    #         continue
-    #     print('on file', file)
-    #     df = pd.read_csv(file)
-    #     df_filtered = df[df['contentType'] != 'heading']
-    #     df_filtered = df_filtered[df_filtered['ContentWordCount']!=0]
-    #     df_filtered.to_csv(file, index=False)
-    
-
     for file in all_files:
-        # new_file=f"{file.split('.')[0]}_new.csv"
-        # if 'splitted' in file:
-        #     continue
-        # df=pd.read_csv(file)
-        if 'new' not in file:
-            continue
-        # print('splitting',file)
-        # new_df=split_chunks(df)
-        # new_df = new_df[new_df['ContentWordCount']!=0]
-        # new_df.to_csv(new_file,index=False)
-        # print('combining',file)
-        # time.sleep(2)
-        # merge_small_chunks(new_df).to_csv(new_file,index=False)
-        # split chunks
-        try:
-            print('summarizing',file)
-            summary(file)
-        except Exception as e:
-            print('Error: ',e)
-
-        
+        driver(file)

@@ -90,7 +90,7 @@ def merge_small_chunks(df,lowerLimit=20):
         # print(row['chunkId'])
         
         stat=(i/size)*100
-        print(stat,'% done',end='\r')
+      
         prev_row=rows[i-1] if i>0 else None
         next_row=rows[i+1] if i<size-1 else None
         
@@ -100,7 +100,6 @@ def merge_small_chunks(df,lowerLimit=20):
         # current_row = None
         temp=1
         while row['ContentWordCount']<lowerLimit:
-            print('here')
             
             if isinstance(next_row, dict):
                 
@@ -117,7 +116,6 @@ def merge_small_chunks(df,lowerLimit=20):
                 psame_type=psame_heading=pvalid_word_count=False
         
             if  same_type and same_heading and valid_word_count:
-                print('here')
                 row['content']+=next_row['content']
                 row['ContentWordCount']+=next_row['ContentWordCount']
                 next_row['status']='unvisited'
@@ -156,7 +154,6 @@ def merge_small_chunks(df,lowerLimit=20):
                 # row['heading']=','.join(list(set([(row['heading']+','+prev_row['heading'])].split(','))))
 
             else:
-                print('reached')
                 temp+=1
                 
                 prev_row=rows[i-temp] if i>temp-1 else None

@@ -1,8 +1,14 @@
 import time 
 import json
 import requests
+from dotenv import load_dotenv
+import os
 
-def translate_text_bhashini(input_text):
+load_dotenv()
+api_key=os.environ.get("bhashini_auth_key")
+
+
+def translate_text_bhashini(input_text,source,target='en'):
     url = "https://dhruva-api.bhashini.gov.in/services/inference/pipeline"
 
     payload = json.dumps({
@@ -11,8 +17,8 @@ def translate_text_bhashini(input_text):
                 "taskType": "translation",
                 "config": {
                     "language": {
-                        "sourceLanguage": "hi",
-                        "targetLanguage": "en"
+                        "sourceLanguage": source,
+                        "targetLanguage": target
                     },
                     "serviceId": "ai4bharat/indictrans-v2-all-gpu--t4"
                 }
@@ -29,7 +35,7 @@ def translate_text_bhashini(input_text):
     headers = {
         'Accept': '*/*',
         'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
-        'Authorization': 'sLAFJehUCZQ72NIM4nDZNCya7TQVzittLgJEU0vIf-69rp0gFUcGu5sjwAaOSUfa',
+        'Authorization': api_key,
         'Content-Type': 'application/json'
     }
 

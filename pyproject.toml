@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pdf-parser"
+version = "0.1.0"
+description = "pdf parsing for rag"
+authors = ["Rachitavya Sharma"]
+license = "n/a"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11"
+requests = "^2.31.0"
+pandas = "^2.1.4"
+openai = "^1.6.1"
+python-dotenv = "^1.0.0"
+fastapi = {extras = ["all"], version = "^0.108.0"}
+uvicorn = "^0.25.0"
+python-multipart = "^0.0.6"
+celery = {extras = ["redis"], version = "^5.3.6"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
